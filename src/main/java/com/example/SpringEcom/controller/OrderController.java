@@ -47,7 +47,12 @@ public class OrderController {
     @PutMapping("order/{id}/status")
     public ResponseEntity<String> updateOrderStatus(@PathVariable String id, @RequestParam OrderStatus status) {
 
+    try {
         orderService.updateOrderStatus(id, status);
-        return new ResponseEntity<>("Updated", HttpStatus.OK);
+        return ResponseEntity.ok("Updated");
+    } catch (RuntimeException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
-}
+    
+    }
+}   
