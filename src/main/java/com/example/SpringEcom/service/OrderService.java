@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 import com.example.SpringEcom.model.Order;
 import com.example.SpringEcom.model.OrderItem;
 import com.example.SpringEcom.model.Product;
+import com.example.SpringEcom.model.OrderStatus;
 import com.example.SpringEcom.model.dto.OrderItemRequest;
 import com.example.SpringEcom.model.dto.OrderItemResponse;
 import com.example.SpringEcom.model.dto.OrderRequest;
@@ -34,7 +36,7 @@ public class OrderService {
         order.setOrderId(orderId);
         order.setCustomerName(request.customerName());
         order.setEmail(request.email());
-        order.setStatus("PLACED");
+        order.setStatus(OrderStatus.PLACED);
         order.setOrderDate(LocalDate.now());
 
         List<OrderItem> orderItems = new ArrayList<>();
@@ -110,6 +112,15 @@ public class OrderService {
 
         }
         return orderResponses;
+    }
+
+    public Order updateOrderStatus(String orderId, OrderStatus status) {
+        
+        Order order = orderRepo.findByOrderId(orderId)
+            .orElseThrow(() -> new RuntimeException("Order not found"));
+        
+        order.setStatus(status);
+       return orderRepo.save(order);
     }
 
 }
