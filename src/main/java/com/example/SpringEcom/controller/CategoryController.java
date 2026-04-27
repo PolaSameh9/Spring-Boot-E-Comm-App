@@ -1,5 +1,6 @@
 package com.example.SpringEcom.controller;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,14 +28,23 @@ public class CategoryController {
 
     @PostMapping("/category")
     private ResponseEntity<String> createCategory(@RequestBody Category category){
-        Category newCategory = categoryService.createCategory(category);
-        return new ResponseEntity<>("Created", HttpStatus.CREATED);
+        try{
+            Category newCategory = categoryService.addOrUpdateCategory(category);
+            return new ResponseEntity<>("Created", HttpStatus.CREATED);
+        } catch (IOException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
     
     @GetMapping("/category/{id}")
     private ResponseEntity<Category> getCategoryById(@PathVariable int id){
         Category newCategory = categoryService.getCategoryById(id);
-        return new ResponseEntity<>(newCategory, HttpStatus.OK);
+        if(newCategory.getId() > 0){
+            return new ResponseEntity<>(newCategory, HttpStatus.OK);
+        }
+        else{
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @GetMapping("/categories")
@@ -45,9 +55,14 @@ public class CategoryController {
 
 
     @PutMapping("/category/{id}")
-    private ResponseEntity<String> UpdateCategory(@PathVariable int id){
+    private ResponseEntity<String> UpdateCategory(@PathVariable int id, @RequestBody Category category){
+        try{
+            Category newCategory = categoryService.addOrUpdateCategory(category);
+            return new ResponseEntity<>("Updated", HttpStatus.OK);
+        }catch(IOException e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
         
-        return new ResponseEntity<>("Updated", HttpStatus.OK);
     }
 
 }

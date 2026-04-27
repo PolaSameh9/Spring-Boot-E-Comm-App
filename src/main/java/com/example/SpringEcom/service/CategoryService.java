@@ -1,5 +1,6 @@
 package com.example.SpringEcom.service;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,13 +15,13 @@ public class CategoryService {
     @Autowired
     CategoryRepo categoryRepo;
 
-    public Category createCategory(Category category) {
+    public Category addOrUpdateCategory(Category category)  throws IOException{
         return  categoryRepo.save(category);
     }
 
     public Category getCategoryById(int id) {
         return categoryRepo.findById(id)
-            .orElseThrow(() -> new RuntimeException("Product not found"));
+            .orElseThrow(() -> new RuntimeException("Category not found"));
     }
 
     public List<Category> getAllCategories() {
