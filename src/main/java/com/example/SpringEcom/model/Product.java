@@ -3,11 +3,14 @@ package com.example.SpringEcom.model;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Lob;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -25,7 +28,6 @@ public class Product {
     private String description;
     private String brand;
     private BigDecimal price;
-    private String category;
     private Date date;
     private boolean productAvailable;
     private int stockQuantity;
@@ -33,6 +35,9 @@ public class Product {
     private String imageType; 
     @Lob  
     private byte[] imageData; 
+
+    @ManyToOne
+    private Category category;
 
     public Product(int id){
         this.id = id;
