@@ -35,13 +35,12 @@ public class ProductService {
         product.setImageData(image.getBytes());
 
         if (product.getCategory() != null && product.getCategory().getId() != null) {
-        Category category = CategoryRepo.findById(product.getCategory().getId())
-            .orElseThrow(() -> new RuntimeException("Category not found"));
-        product.setCategory(category);
-         } else {
-        throw new RuntimeException("Category must be provided");
+            Category category = CategoryRepo.findById(product.getCategory().getId())
+                    .orElseThrow(() -> new RuntimeException("Category not found"));
+            product.setCategory(category);
+        } else {
+            throw new RuntimeException("Category must be provided");
         }
-        
 
         return productRepo.save(product);
     }
@@ -53,6 +52,5 @@ public class ProductService {
     public List<Product> searchProducts(String keyword) {
         return productRepo.searchProducts(keyword);
     }
-
 
 }

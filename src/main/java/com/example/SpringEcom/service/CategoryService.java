@@ -20,13 +20,16 @@ public class CategoryService {
     }
 
     public Category getCategoryById(int id) {
-        return categoryRepo.findById(id)
-            .orElseThrow(() -> new RuntimeException("Category not found"));
+        return categoryRepo.findById(id).orElse(new Category(-1));
     }
 
     public List<Category> getAllCategories() {
         List<Category> categories = categoryRepo.findAll();
         return categories;
+    }
+
+    public void deleteCategory(Category category) {
+        categoryRepo.delete(category);
     }
 
 }

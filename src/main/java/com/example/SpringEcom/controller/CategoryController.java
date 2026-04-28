@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -57,7 +58,7 @@ public class CategoryController {
 
 
     @PutMapping("/category/{id}")
-    private ResponseEntity<String> UpdateCategory(@PathVariable int id, @RequestBody Category category){
+    private ResponseEntity<String> updateCategory(@PathVariable int id, @RequestBody Category category){
         try{
             Category newCategory = categoryService.addOrUpdateCategory(category);
             return new ResponseEntity<>("Updated", HttpStatus.OK);
@@ -65,6 +66,18 @@ public class CategoryController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
         
+    }
+
+    @DeleteMapping("category/{id}")
+    private ResponseEntity<String> deleteCategory(@PathVariable int id){
+        Category newCategory = categoryService.getCategoryById(id);
+        if(newCategory.getId() > 0){
+            categoryService.deleteCategory(newCategory);
+            return new ResponseEntity<>("Deleted", HttpStatus.OK);
+        }
+        else{
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
 
