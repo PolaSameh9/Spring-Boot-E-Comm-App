@@ -53,6 +53,8 @@ public class CategoryController {
         return new ResponseEntity<>(newCategory, HttpStatus.OK);
     }
 
+    
+
 
     @PutMapping("/category/{id}")
     private ResponseEntity<String> UpdateCategory(@PathVariable int id, @RequestBody Category category){
@@ -64,5 +66,6 @@ public class CategoryController {
         }
         
     }
+
 
 }

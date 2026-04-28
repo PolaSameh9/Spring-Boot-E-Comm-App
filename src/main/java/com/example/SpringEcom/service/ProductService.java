@@ -7,7 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.example.SpringEcom.model.Category;
 import com.example.SpringEcom.model.Product;
+import com.example.SpringEcom.repo.CategoryRepo;
 import com.example.SpringEcom.repo.ProductRepo;
 
 @Service
@@ -15,6 +17,9 @@ public class ProductService {
 
     @Autowired
     ProductRepo productRepo;
+
+    @Autowired
+    CategoryRepo CategoryRepo;
 
     public List<Product> getAllProducts() {
         return productRepo.findAll();
@@ -28,6 +33,15 @@ public class ProductService {
         product.setImageType(image.getOriginalFilename());
         product.setImageName(image.getName());
         product.setImageData(image.getBytes());
+
+        if (product.getCategory() != null && product.getCategory().getId() != null) {
+        Category category = CategoryRepo.findById(product.getCategory().getId())
+            .orElseThrow(() -> new RuntimeException("Category not found"));
+        product.setCategory(category);
+         } else {
+        throw new RuntimeException("Category must be provided");
+        }
+        
 
         return productRepo.save(product);
     }
