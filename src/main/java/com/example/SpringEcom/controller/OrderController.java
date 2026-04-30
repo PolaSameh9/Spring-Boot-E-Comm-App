@@ -21,7 +21,7 @@ import com.example.SpringEcom.model.dto.OrderResponse;
 import com.example.SpringEcom.service.OrderService;
 
 @RestController
-@CrossOrigin
+@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/api")
 public class OrderController {
 

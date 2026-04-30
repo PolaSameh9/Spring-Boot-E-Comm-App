@@ -20,13 +20,14 @@ public class CategoryService {
     }
 
     public Category getCategoryById(int id) {
-        return categoryRepo.findById(id).orElse(new Category(-1));
+        return categoryRepo.findById(id).orElse(null);
     }
 
     public List<Category> getAllCategories() {
         List<Category> categories = categoryRepo.findAll();
         return categories;
     }
+
 
     public void deleteCategory(Category category) {
         categoryRepo.delete(category);

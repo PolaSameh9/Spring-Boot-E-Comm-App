@@ -20,7 +20,7 @@ import com.example.SpringEcom.model.Category;
 import com.example.SpringEcom.service.CategoryService;
 
 @RestController
-@CrossOrigin
+@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/api")
 public class CategoryController {
 
@@ -28,57 +28,53 @@ public class CategoryController {
     private CategoryService categoryService;
 
     @PostMapping("/category")
-    private ResponseEntity<String> createCategory(@RequestBody Category category){
-        try{
+    public ResponseEntity<String> createCategory(@RequestBody Category category) {
+        try {
             Category newCategory = categoryService.addOrUpdateCategory(category);
             return new ResponseEntity<>("Created", HttpStatus.CREATED);
         } catch (IOException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    
+
+
     @GetMapping("/category/{id}")
-    private ResponseEntity<Category> getCategoryById(@PathVariable int id){
+    public ResponseEntity<Category> getCategoryById(@PathVariable int id) {
         Category newCategory = categoryService.getCategoryById(id);
-        if(newCategory.getId() > 0){
+        if (newCategory != null) {
             return new ResponseEntity<>(newCategory, HttpStatus.OK);
-        }
-        else{
+        } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
     @GetMapping("/categories")
-    private ResponseEntity<List<Category>> getCategories(){
+    public ResponseEntity<List<Category>> getCategories() {
         List<Category> newCategory = categoryService.getAllCategories();
         return new ResponseEntity<>(newCategory, HttpStatus.OK);
     }
 
-    
-
-
     @PutMapping("/category/{id}")
-    private ResponseEntity<String> updateCategory(@PathVariable int id, @RequestBody Category category){
-        try{
-            Category newCategory = categoryService.addOrUpdateCategory(category);
+    public ResponseEntity<String> updateCategory(@PathVariable int id, @RequestBody Category category) {
+        try {
+            category.setId(id);
+            categoryService.addOrUpdateCategory(category);
             return new ResponseEntity<>("Updated", HttpStatus.OK);
-        }catch(IOException e){
+        } catch (IOException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
-        
+
     }
 
-    @DeleteMapping("category/{id}")
-    private ResponseEntity<String> deleteCategory(@PathVariable int id){
+    @DeleteMapping("/category/{id}")
+    public ResponseEntity<String> deleteCategory(@PathVariable int id) {
         Category newCategory = categoryService.getCategoryById(id);
-        if(newCategory.getId() > 0){
+        if (newCategory != null) {
             categoryService.deleteCategory(newCategory);
             return new ResponseEntity<>("Deleted", HttpStatus.OK);
-        }
-        else{
+        } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
-
 
 }
