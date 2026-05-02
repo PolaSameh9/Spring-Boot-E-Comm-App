@@ -1,4 +1,4 @@
-package com.example.SpringEcom.model.dto;
+package com.example.SpringEcom.model.dto.OrderDTO;
 
 import java.time.LocalDate;
 import java.util.List;

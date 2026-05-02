@@ -13,11 +13,11 @@ import org.springframework.stereotype.Service;
 import com.example.SpringEcom.model.Order;
 import com.example.SpringEcom.model.OrderItem;
 import com.example.SpringEcom.model.Product;
+import com.example.SpringEcom.model.dto.OrderDTO.OrderItemRequest;
+import com.example.SpringEcom.model.dto.OrderDTO.OrderItemResponse;
+import com.example.SpringEcom.model.dto.OrderDTO.OrderRequest;
+import com.example.SpringEcom.model.dto.OrderDTO.OrderResponse;
 import com.example.SpringEcom.model.OrderStatus;
-import com.example.SpringEcom.model.dto.OrderItemRequest;
-import com.example.SpringEcom.model.dto.OrderItemResponse;
-import com.example.SpringEcom.model.dto.OrderRequest;
-import com.example.SpringEcom.model.dto.OrderResponse;
 import com.example.SpringEcom.repo.OrderRepo;
 import com.example.SpringEcom.repo.ProductRepo;
 

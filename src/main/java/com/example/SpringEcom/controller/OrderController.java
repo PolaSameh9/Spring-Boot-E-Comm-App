@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.SpringEcom.model.OrderStatus;
-import com.example.SpringEcom.model.dto.OrderRequest;
-import com.example.SpringEcom.model.dto.OrderResponse;
+import com.example.SpringEcom.model.dto.OrderDTO.OrderRequest;
+import com.example.SpringEcom.model.dto.OrderDTO.OrderResponse;
 import com.example.SpringEcom.service.OrderService;
 
 @RestController
