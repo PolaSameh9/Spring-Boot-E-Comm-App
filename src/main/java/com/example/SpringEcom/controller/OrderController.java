@@ -40,7 +40,7 @@ public class OrderController {
         return new ResponseEntity<>(orders, HttpStatus.OK);
     }
 
-    @PutMapping("order/{id}/status")
+    @PutMapping("orders/{id}/status")
     public ResponseEntity<String> updateOrderStatus(@PathVariable String id, @RequestParam OrderStatus status) {
 
         try {
