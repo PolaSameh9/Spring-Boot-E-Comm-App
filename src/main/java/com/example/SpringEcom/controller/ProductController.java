@@ -1,9 +1,11 @@
 package com.example.SpringEcom.controller;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -19,6 +21,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.SpringEcom.model.Product;
+import com.example.SpringEcom.model.dto.ProductDTO.ProductRequest;
+import com.example.SpringEcom.model.dto.ProductDTO.ProductResponse;
 import com.example.SpringEcom.service.ProductService;
 
 import tools.jackson.databind.ObjectMapper;
@@ -100,6 +104,26 @@ public class ProductController {
         return new ResponseEntity<>(products, HttpStatus.OK);
     }
 
-    
+    @GetMapping("/products/filtering&pagnation&sorting")
+    public ResponseEntity<Page<ProductResponse>> getAllProducts(
+        @RequestParam(name = "page", defaultValue= "0") Integer page,
+        @RequestParam(name = "size", defaultValue= "10") Integer size,
+        @RequestParam(name = "sort", defaultValue= "[{\"field\":\"productName\",\"direction\":\"desc\"}]") String sort,
+        @RequestParam(name = "name", required= false) String productName,
+        @RequestParam(name = "price", required= false) BigDecimal productPrice,
+        @RequestParam(name = "category_id", required= false) Integer categoryId
+    ){
+        Page<ProductResponse> productRequest = productService.searchProductsWithPagnationSortingAndFiltering(
+                ProductRequest.builder()
+                .productName(productName)
+                .productPrice(productPrice)
+                .categoryId(categoryId)
+                .page(page)
+                .size(size)
+                .sort(sort)
+                .build()
+                );
+        return new ResponseEntity<>(productRequest, HttpStatus.OK);
+    }
 
 }
