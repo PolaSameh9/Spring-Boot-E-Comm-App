@@ -3,7 +3,7 @@ package com.example.SpringEcom.model;
 import java.math.BigDecimal;
 import java.util.Date;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -39,7 +39,7 @@ public class Product {
 
     @ManyToOne
     @JoinColumn(name = "category_id")
-    @JsonBackReference
+    @JsonIgnoreProperties({"products"})
     private Category category;
 
     public Product(int id){
