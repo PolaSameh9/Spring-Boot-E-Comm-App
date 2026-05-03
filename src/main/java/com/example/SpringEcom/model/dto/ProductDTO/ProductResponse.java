@@ -19,6 +19,6 @@ public class ProductResponse {
     private BigDecimal productPrice;
     private Date productDate;
     private String categoryName;
-    private byte[] imageData;
+    // private byte[] imageData;
 
 }
