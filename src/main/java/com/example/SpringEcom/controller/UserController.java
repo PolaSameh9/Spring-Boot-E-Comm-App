@@ -21,6 +21,7 @@ import com.example.SpringEcom.service.UserService;
 @CrossOrigin(origins = "http://localhost:3000")
 public class UserController {
 
+    @Autowired
     private UserService service;
 
 	@Autowired
@@ -30,16 +31,16 @@ public class UserController {
 	AuthenticationManager authenticationManager;
 
     @PostMapping("/register")
-    public User register(@RequestBody User user){
+    public String register(@RequestBody User user){
         return service.saveUser(user);
     }
 
     @PostMapping("/login")
     public String login(@RequestBody AuthRequest authRequest){
         Authentication authentication = authenticationManager
-                .authenticate(new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));
+                .authenticate(new UsernamePasswordAuthenticationToken(authRequest.getEmail(), authRequest.getPassword()));
         if(authentication.isAuthenticated()){
-            return jwtService.generateToken(authRequest.getUsername());
+            return jwtService.generateToken(authRequest.getEmail());
         }
         else{
             throw new UsernameNotFoundException("Invalid user request!");
