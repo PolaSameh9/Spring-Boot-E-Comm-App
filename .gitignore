@@ -34,3 +34,5 @@ build/
 
 ### Custom Local Overrides ###
 src/main/resources/application.properties
+
+docker-compose.yml
