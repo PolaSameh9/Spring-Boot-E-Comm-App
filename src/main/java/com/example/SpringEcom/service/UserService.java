@@ -1,5 +1,7 @@
 package com.example.SpringEcom.service;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -25,6 +27,10 @@ public class UserService {
         user.setPassword(encoder.encode(user.getPassword()));
         repo.save(user);
         return "User added successfully!";
+    }
+
+    public Optional<User> findByEmail(String email) {
+       return repo.findByEmail(email);
     }
 
 

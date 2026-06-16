@@ -1,8 +1,10 @@
 package com.example.SpringEcom.config;
 
+import com.example.SpringEcom.config.OAuth2LoginSuccessHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -22,18 +24,22 @@ import com.example.SpringEcom.service.MyUserDetailsService;
 @EnableWebSecurity
 public class SecurityConfig {
 
+    private final OAuth2LoginSuccessHandler OAuth2LoginSuccessHandler;
+
     @Autowired
     private final MyUserDetailsService userDetailsService;
 
     @Autowired
     private final JwtFilter jwtFilter;
 
-    public SecurityConfig(JwtFilter jwtFilter, MyUserDetailsService userDetailsService) {
+    public SecurityConfig(JwtFilter jwtFilter, MyUserDetailsService userDetailsService, OAuth2LoginSuccessHandler OAuth2LoginSuccessHandler) {
         this.jwtFilter = jwtFilter;
         this.userDetailsService = userDetailsService;
+        this.OAuth2LoginSuccessHandler = OAuth2LoginSuccessHandler;
     }
 
     @Bean
+    @Order(2)
     public SecurityFilterChain securityFilterChain(HttpSecurity http){
 
         http.csrf(customizer -> customizer.disable())
@@ -45,7 +51,7 @@ public class SecurityConfig {
                     .anyRequest()
                     .authenticated())
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .oauth2Login(Customizer.withDefaults())
+            .oauth2Login(oauth -> oauth.successHandler(OAuth2LoginSuccessHandler))
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
