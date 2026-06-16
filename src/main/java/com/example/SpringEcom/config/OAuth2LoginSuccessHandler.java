@@ -28,17 +28,24 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler{
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request,
                                         HttpServletResponse response,
-                                        Authentication authentication) throws IOException{
+                                        Authentication authentication) throws IOException {
         OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
-        String email = oAuth2User.getAttribute("email");
 
-        User user = userService.findByEmail(email).orElse(new User());
+        String email = oAuth2User.getAttribute("email");
+        String login = oAuth2User.getAttribute("login");
+
+        String safeEmail = (email != null && !email.isBlank())
+                ? email
+                : login + "@github.com";
+
+        User user = userService.findByEmail(safeEmail)
+                .orElseGet(() -> userService.createOAuthUser(safeEmail, login));
 
         String token = jwtService.generateToken(user.getEmail());
 
         response.setContentType("application/json");
         response.getWriter().write("{\"token\":\"" + token + "\"}");
-        
     }
+        
 
 }

@@ -24,7 +24,7 @@ import com.example.SpringEcom.service.MyUserDetailsService;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    private final OAuth2LoginSuccessHandler OAuth2LoginSuccessHandler;
+    
 
     @Autowired
     private final MyUserDetailsService userDetailsService;
@@ -32,15 +32,14 @@ public class SecurityConfig {
     @Autowired
     private final JwtFilter jwtFilter;
 
-    public SecurityConfig(JwtFilter jwtFilter, MyUserDetailsService userDetailsService, OAuth2LoginSuccessHandler OAuth2LoginSuccessHandler) {
+    public SecurityConfig(JwtFilter jwtFilter, MyUserDetailsService userDetailsService) {
         this.jwtFilter = jwtFilter;
         this.userDetailsService = userDetailsService;
-        this.OAuth2LoginSuccessHandler = OAuth2LoginSuccessHandler;
     }
 
     @Bean
     @Order(2)
-    public SecurityFilterChain securityFilterChain(HttpSecurity http){
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, OAuth2LoginSuccessHandler successHandler){
 
         http.csrf(customizer -> customizer.disable())
             .authorizeHttpRequests(request -> request
@@ -51,7 +50,8 @@ public class SecurityConfig {
                     .anyRequest()
                     .authenticated())
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .oauth2Login(oauth -> oauth.successHandler(OAuth2LoginSuccessHandler))
+            .oauth2Login(oauth -> oauth.successHandler(successHandler))
+            .authenticationProvider(authProvider())
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
