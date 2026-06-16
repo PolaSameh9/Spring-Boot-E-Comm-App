@@ -42,9 +42,8 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler{
                 .orElseGet(() -> userService.createOAuthUser(safeEmail, login));
 
         String token = jwtService.generateToken(user.getEmail());
-
-        response.setContentType("application/json");
-        response.getWriter().write("{\"token\":\"" + token + "\"}");
+        String redirectUrl = "http://localhost:3000/oauth-callback?token=" + token;
+        response.sendRedirect(redirectUrl);
     }
         
 

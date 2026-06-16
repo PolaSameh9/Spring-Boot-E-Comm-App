@@ -26,6 +26,8 @@ import com.example.SpringEcom.specification.ProductSpecification;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import jakarta.transaction.Transactional;
+
 
 @Service
 public class ProductService {
@@ -44,6 +46,7 @@ public class ProductService {
         return productRepo.findById(id).orElse(new Product(-1));
     }
 
+    @Transactional
     public Product addOrUpdateProduct(Product product, MultipartFile image) throws IOException {
         product.setImageType(image.getOriginalFilename());
         product.setImageName(image.getName());
