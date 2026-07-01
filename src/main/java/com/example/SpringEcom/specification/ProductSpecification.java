@@ -22,7 +22,7 @@ public class ProductSpecification {
             }
 
             if (filterDto.getProductPrice() != null) {
-                predicates.add(criteriaBuilder.equal(root.get("productPrice"),filterDto.getProductPrice()));
+                predicates.add(criteriaBuilder.equal(root.get("price"),filterDto.getProductPrice()));
             }
 
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));

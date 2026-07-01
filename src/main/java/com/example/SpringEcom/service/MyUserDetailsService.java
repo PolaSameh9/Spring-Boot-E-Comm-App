@@ -2,7 +2,6 @@ package com.example.SpringEcom.service;
 
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -14,8 +13,11 @@ import com.example.SpringEcom.repo.UserRepo;
 @Service
 public class MyUserDetailsService implements UserDetailsService{
 
-    @Autowired
-    private UserRepo repo;
+    private final UserRepo repo;
+
+    public MyUserDetailsService(UserRepo repo) {
+        this.repo = repo;
+    }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

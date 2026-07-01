@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -32,11 +31,13 @@ import jakarta.transaction.Transactional;
 @Service
 public class ProductService {
 
-    @Autowired
-    ProductRepo productRepo;
+    private final ProductRepo productRepo;
+    private final CategoryRepo categoryRepo;
 
-    @Autowired
-    CategoryRepo CategoryRepo;
+    public ProductService(ProductRepo productRepo, CategoryRepo categoryRepo){
+        this.productRepo = productRepo;
+        this.categoryRepo = categoryRepo;
+    }
 
     public List<Product> getAllProducts() {
         return productRepo.findAll();
@@ -53,7 +54,7 @@ public class ProductService {
         product.setImageData(image.getBytes());
 
         if (product.getCategory() != null && product.getCategory().getId() != null) {
-            Category category = CategoryRepo.findById(product.getCategory().getId())
+            Category category = categoryRepo.findById(product.getCategory().getId())
                     .orElseThrow(() -> new RuntimeException("Category not found"));
             product.setCategory(category);
         } else {

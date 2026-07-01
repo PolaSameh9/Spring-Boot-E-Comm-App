@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.SpringEcom.model.Order;
@@ -24,10 +23,13 @@ import com.example.SpringEcom.repo.ProductRepo;
 @Service
 public class OrderService {
 
-    @Autowired
-    private ProductRepo productRepo;
-    @Autowired
-    private OrderRepo orderRepo;
+    private final ProductRepo productRepo;
+    private final OrderRepo orderRepo;
+
+    public OrderService(ProductRepo productRepo, OrderRepo orderRepo){
+        this.productRepo = productRepo;
+        this.orderRepo = orderRepo;
+    }
 
     public OrderResponse placeOrder(OrderRequest request) {
         Order order = new Order();
