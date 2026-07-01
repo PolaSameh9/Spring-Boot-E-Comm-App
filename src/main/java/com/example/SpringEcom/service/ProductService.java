@@ -49,8 +49,8 @@ public class ProductService {
 
     @Transactional
     public Product addOrUpdateProduct(Product product, MultipartFile image) throws IOException {
-        product.setImageType(image.getOriginalFilename());
-        product.setImageName(image.getName());
+        product.setImageName(image.getOriginalFilename());
+        product.setImageType(image.getContentType());
         product.setImageData(image.getBytes());
 
         if (product.getCategory() != null && product.getCategory().getId() != null) {

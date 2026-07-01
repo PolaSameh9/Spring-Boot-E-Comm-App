@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.SpringEcom.model.Order;
 import com.example.SpringEcom.model.OrderItem;
@@ -19,21 +20,23 @@ import com.example.SpringEcom.model.dto.OrderDTO.OrderResponse;
 import com.example.SpringEcom.repo.OrderRepo;
 import com.example.SpringEcom.repo.ProductRepo;
 
-
 @Service
 public class OrderService {
 
     private final ProductRepo productRepo;
     private final OrderRepo orderRepo;
 
-    public OrderService(ProductRepo productRepo, OrderRepo orderRepo){
+    public OrderService(ProductRepo productRepo, OrderRepo orderRepo) {
         this.productRepo = productRepo;
         this.orderRepo = orderRepo;
     }
 
+    @Transactional
     public OrderResponse placeOrder(OrderRequest request) {
+
         Order order = new Order();
-        String orderId = UUID.randomUUID().toString().substring(0,8).toUpperCase();
+
+        String orderId = UUID.randomUUID().toString().substring(0, 8).toUpperCase();
         order.setOrderId(orderId);
         order.setCustomerName(request.customerName());
         order.setEmail(request.email());
@@ -41,46 +44,34 @@ public class OrderService {
         order.setOrderDate(LocalDate.now());
 
         List<OrderItem> orderItems = new ArrayList<>();
-        for(OrderItemRequest itemReq : request.items()){
+
+        for (OrderItemRequest itemReq : request.items()) {
 
             Product product = productRepo.findById(itemReq.productId())
-                .orElseThrow(() -> new RuntimeException("Product not found"));
+                    .orElseThrow(() -> new RuntimeException("Product not found"));
+
+            if (product.getStockQuantity() < itemReq.quantity()) {
+                throw new RuntimeException("Insufficient stock");
+            }
 
             product.setStockQuantity(product.getStockQuantity() - itemReq.quantity());
             productRepo.save(product);
 
             OrderItem orderItem = OrderItem.builder()
-                .product(product)
-                .quantity(itemReq.quantity())
-                .totalPrice(product.getPrice().multiply(BigDecimal.valueOf(itemReq.quantity())))
-                .order(order)
-                .build();
+                    .product(product)
+                    .quantity(itemReq.quantity())
+                    .totalPrice(product.getPrice().multiply(BigDecimal.valueOf(itemReq.quantity())))
+                    .order(order)
+                    .build();
 
-                orderItems.add(orderItem);
+            orderItems.add(orderItem);
         }
+
         order.setOrderItems(orderItems);
-        Order saveOrder = orderRepo.save(order);
 
-        List<OrderItemResponse> itemResponses = new ArrayList<>();
-        for(OrderItem item : order.getOrderItems()){
-            OrderItemResponse orderItemResponse = new OrderItemResponse(
-                item.getProduct().getName(),
-                item.getQuantity(),
-                item.getTotalPrice()
-            );
-            itemResponses.add(orderItemResponse);
-        }
+        Order savedOrder = orderRepo.save(order);
 
-        OrderResponse orderResponse = new OrderResponse(
-            saveOrder.getOrderId(),
-            saveOrder.getCustomerName(),
-            saveOrder.getEmail(),
-            saveOrder.getStatus(),
-            saveOrder.getOrderDate(),
-            itemResponses
-        );
-
-        return orderResponse;
+        return mapToOrderResponse(savedOrder);
     }
 
     public List<OrderResponse> getAllOrderResponses() {
@@ -88,40 +79,45 @@ public class OrderService {
         List<Order> orders = orderRepo.findAll();
         List<OrderResponse> orderResponses = new ArrayList<>();
 
-        for(Order order : orders){
+        for (Order order : orders) {
+            orderResponses.add(mapToOrderResponse(order));
+        }
 
-            List<OrderItemResponse> itemResponses = new ArrayList<>();
+        return orderResponses;
+    }
 
-            for(OrderItem item : order.getOrderItems()){
-                OrderItemResponse orderItemResponse = new OrderItemResponse(
-                    item.getProduct().getName(),
-                    item.getQuantity(),
-                    item.getTotalPrice()
-                );
-                itemResponses.add(orderItemResponse);
-            }
+    public Order updateOrderStatus(String orderId, OrderStatus status) {
 
-            OrderResponse orderResponse = new OrderResponse(
+        Order order = orderRepo.findByOrderId(orderId)
+                .orElseThrow(() -> new RuntimeException("Order not found"));
+
+        order.setStatus(status);
+
+        return orderRepo.save(order);
+    }
+
+    private OrderResponse mapToOrderResponse(Order order) {
+
+        List<OrderItemResponse> itemResponses = new ArrayList<>();
+
+        for (OrderItem item : order.getOrderItems()) {
+            itemResponses.add(mapToOrderItemResponse(item));
+        }
+
+        return new OrderResponse(
                 order.getOrderId(),
                 order.getCustomerName(),
                 order.getEmail(),
                 order.getStatus(),
                 order.getOrderDate(),
-                itemResponses
-            );
-            orderResponses.add(orderResponse);
-
-        }
-        return orderResponses;
+                itemResponses);
     }
 
-    public Order updateOrderStatus(String orderId, OrderStatus status) {
-        
-        Order order = orderRepo.findByOrderId(orderId)
-            .orElseThrow(() -> new RuntimeException("Order not found"));
-        
-        order.setStatus(status);
-       return orderRepo.save(order);
-    }
+    private OrderItemResponse mapToOrderItemResponse(OrderItem item) {
 
+        return new OrderItemResponse(
+                item.getProduct().getName(),
+                item.getQuantity(),
+                item.getTotalPrice());
+    }
 }

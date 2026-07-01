@@ -23,12 +23,13 @@ public class CategoryService {
     }
 
     public Category getCategoryById(int id) {
-        return categoryRepo.findById(id).orElse(null);
+        return categoryRepo.findById(id)
+        .orElseThrow(() ->
+            new RuntimeException("Category not found"));
     }
 
     public List<Category> getAllCategories() {
-        List<Category> categories = categoryRepo.findAll();
-        return categories;
+        return categoryRepo.findAll();
     }
 
 
