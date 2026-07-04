@@ -2,7 +2,6 @@ package com.example.SpringEcom.controller;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -24,10 +23,13 @@ import com.example.SpringEcom.service.OrderService;
 @RequestMapping("/api")
 public class OrderController {
 
-    @Autowired
-    private OrderService orderService;
+    private final OrderService orderService;
 
-    @PostMapping("/orders/place")
+    public OrderController(OrderService orderService) {
+        this.orderService = orderService;
+    }
+
+    @PostMapping("/orders")
     public ResponseEntity<OrderResponse> placeOrder(@RequestBody OrderRequest orderRequest) {
         OrderResponse orderResponse = orderService.placeOrder(orderRequest);
         return new ResponseEntity<>(orderResponse, HttpStatus.CREATED);
@@ -36,14 +38,14 @@ public class OrderController {
     @GetMapping("/orders")
     public ResponseEntity<List<OrderResponse>> getAllOrders() {
         List<OrderResponse> orders = orderService.getAllOrderResponses();
-        return new ResponseEntity<>(orders, HttpStatus.OK);
+        return ResponseEntity.ok(orders);
     }
 
-    @PutMapping("order/{id}/status")
-    public ResponseEntity<String> updateOrderStatus(@PathVariable String id, @RequestBody OrderStatusRequest status) {
+    @PutMapping("/order/{orderId}/status")
+    public ResponseEntity<String> updateOrderStatus(@PathVariable String orderId, @RequestBody OrderStatusRequest status) {
 
         try {
-            orderService.updateOrderStatus(id, status.getStatus());
+            orderService.updateOrderStatus(orderId, status.getStatus());
             return ResponseEntity.ok("Updated");
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());

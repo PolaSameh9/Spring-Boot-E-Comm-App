@@ -18,7 +18,7 @@ public class CategoryService {
         this.categoryRepo = categoryRepo;
     }
 
-    public Category addOrUpdateCategory(Category category)  throws IOException{
+    public Category addOrUpdateCategory(Category category){
         return  categoryRepo.save(category);
     }
 

@@ -44,7 +44,8 @@ public class ProductService {
     }
 
     public Product getProductById(int id) {
-        return productRepo.findById(id).orElse(new Product(-1));
+        return productRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Product not found"));
     }
 
     @Transactional

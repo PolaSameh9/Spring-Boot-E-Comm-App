@@ -1,7 +1,5 @@
 package com.example.SpringEcom.config;
 
-import com.example.SpringEcom.config.OAuth2LoginSuccessHandler;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -26,12 +24,7 @@ import com.example.SpringEcom.service.MyUserDetailsService;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    
-
-    @Autowired
     private final MyUserDetailsService userDetailsService;
-
-    @Autowired
     private final JwtFilter jwtFilter;
 
     public SecurityConfig(JwtFilter jwtFilter, MyUserDetailsService userDetailsService) {

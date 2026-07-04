@@ -1,7 +1,5 @@
 package com.example.SpringEcom.service;
 
-
-
 import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
@@ -17,7 +15,6 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-
 
 @Service
 public class JwtService {

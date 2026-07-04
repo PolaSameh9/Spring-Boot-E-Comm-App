@@ -1,9 +1,7 @@
 package com.example.SpringEcom.controller;
 
-import java.io.IOException;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -24,57 +22,48 @@ import com.example.SpringEcom.service.CategoryService;
 @RequestMapping("/api")
 public class CategoryController {
 
-    @Autowired
-    private CategoryService categoryService;
+    private final CategoryService categoryService;
 
-    @PostMapping("/category")
-    public ResponseEntity<String> createCategory(@RequestBody Category category) {
-        try {
-            Category newCategory = categoryService.addOrUpdateCategory(category);
-            return new ResponseEntity<>("Created", HttpStatus.CREATED);
-        } catch (IOException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public CategoryController(CategoryService categoryService) {
+        this.categoryService = categoryService;
     }
 
+    @PostMapping("/categories")
+    public ResponseEntity<String> createCategory(@RequestBody Category category) {
 
-    @GetMapping("/category/{id}")
+        categoryService.addOrUpdateCategory(category);
+
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body("Created");
+    }
+
+    @GetMapping("/categories/{id}")
     public ResponseEntity<Category> getCategoryById(@PathVariable int id) {
-        Category newCategory = categoryService.getCategoryById(id);
-        if (newCategory != null) {
-            return new ResponseEntity<>(newCategory, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        return ResponseEntity.ok(categoryService.getCategoryById(id));
     }
 
     @GetMapping("/categories")
     public ResponseEntity<List<Category>> getCategories() {
-        List<Category> newCategory = categoryService.getAllCategories();
-        return new ResponseEntity<>(newCategory, HttpStatus.OK);
+        return ResponseEntity.ok(categoryService.getAllCategories());
     }
 
-    @PutMapping("/category/{id}")
-    public ResponseEntity<String> updateCategory(@PathVariable int id, @RequestBody Category category) {
-        try {
-            category.setId(id);
-            categoryService.addOrUpdateCategory(category);
-            return new ResponseEntity<>("Updated", HttpStatus.OK);
-        } catch (IOException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-        }
+    @PutMapping("/categories/{id}")
+    public ResponseEntity<String> updateCategory(
+            @PathVariable int id,
+            @RequestBody Category category) {
 
+        category.setId(id);
+        categoryService.addOrUpdateCategory(category);
+
+        return ResponseEntity.ok("Updated");
     }
 
-    @DeleteMapping("/category/{id}")
+    @DeleteMapping("/categories/{id}")
     public ResponseEntity<String> deleteCategory(@PathVariable int id) {
-        Category newCategory = categoryService.getCategoryById(id);
-        if (newCategory != null) {
-            categoryService.deleteCategory(newCategory);
-            return new ResponseEntity<>("Deleted", HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-    }
 
+        categoryService.deleteCategory(
+                categoryService.getCategoryById(id));
+
+        return ResponseEntity.ok("Deleted");
+    }
 }

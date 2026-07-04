@@ -1,14 +1,8 @@
 package com.example.SpringEcom.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import java.util.Map;
 
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,29 +19,34 @@ import com.example.SpringEcom.service.UserService;
 @CrossOrigin(origins = "http://localhost:3000")
 public class UserController {
 
-    @Autowired
-    private UserService service;
+    private final UserService service;
+    private final JwtService jwtService;
+    private final AuthenticationManager authenticationManager;
 
-	@Autowired
-	private JwtService jwtService;
-
-	@Autowired
-	AuthenticationManager authenticationManager;
+    public UserController(UserService service, JwtService jwtService, AuthenticationManager authenticationManager) {
+        this.service = service;
+        this.jwtService = jwtService;
+        this.authenticationManager = authenticationManager;
+    }
 
     @PostMapping("/register")
-    public String register(@RequestBody User user){
+    public String register(@RequestBody User user) {
         return service.saveUser(user);
     }
 
     @PostMapping("/login")
-    public String login(@RequestBody AuthRequest authRequest){
-        Authentication authentication = authenticationManager
-                .authenticate(new UsernamePasswordAuthenticationToken(authRequest.getEmail(), authRequest.getPassword()));
-        if(authentication.isAuthenticated()){
-            return jwtService.generateToken(authRequest.getEmail());
-        }
-        else{
-            throw new UsernameNotFoundException("Invalid user request!");
-        }
+    public AuthResponse login(@RequestBody AuthRequest authRequest) {
+        authenticationManager.authenticate(
+            new UsernamePasswordAuthenticationToken(
+                authRequest.getEmail(),
+                authRequest.getPassword()
+            )
+        );
+        return new AuthResponse(
+            jwtService.generateToken(authRequest.getEmail())
+        );
     }
+
+    public record AuthResponse(String token)
+    {}
 }

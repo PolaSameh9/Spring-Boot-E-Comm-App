@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,15 +24,18 @@ import com.example.SpringEcom.model.dto.ProductDTO.ProductRequest;
 import com.example.SpringEcom.model.dto.ProductDTO.ProductResponse;
 import com.example.SpringEcom.service.ProductService;
 
-import tools.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RestController
 @RequestMapping("/api")
 @CrossOrigin(origins = "http://localhost:3000")
 public class ProductController {
 
-    @Autowired
-    ProductService productService;
+    private final ProductService productService;
+
+    public ProductController(ProductService productService) {
+        this.productService = productService;
+    }
 
     @GetMapping("/products")
     public ResponseEntity<List<Product>> getProducts() {
@@ -42,20 +44,13 @@ public class ProductController {
 
     @GetMapping("/product/{id}")
     public ResponseEntity<Product> getProductById(@PathVariable int id) {
-        Product product = productService.getProductById(id);
-        if (product.getId() > 0)
-            return new ResponseEntity<>(product, HttpStatus.OK);
-        else
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return ResponseEntity.ok(productService.getProductById(id));
     }
 
-    @GetMapping("product/{productId}/image")
+    @GetMapping("/product/{productId}/image")
     public ResponseEntity<byte[]> getImageByProductId(@PathVariable int productId) {
         Product product = productService.getProductById(productId);
-        if (product.getId() > 0)
-            return new ResponseEntity<>(product.getImageData(), HttpStatus.OK);
-        else
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return ResponseEntity.ok(product.getImageData());
     }
 
     @PostMapping("/product")
@@ -71,30 +66,26 @@ public class ProductController {
     }
 
     @PutMapping("/product/{id}")
-    public ResponseEntity<String> updateProduct(@PathVariable int id, @RequestPart Product product,
+    public ResponseEntity<String> updateProduct(
+            @PathVariable int id,
+            @RequestPart Product product,
             @RequestPart MultipartFile imageFile) {
 
-        Product updatedProduct = null;
+        product.setId(id);
 
         try {
-            updatedProduct = productService.addOrUpdateProduct(product, imageFile);
-            return new ResponseEntity<>("Updated", HttpStatus.OK);
+            productService.addOrUpdateProduct(product, imageFile);
+            return ResponseEntity.ok("Updated");
         } catch (IOException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
     @DeleteMapping("/product/{id}")
     public ResponseEntity<String> deleteProduct(@PathVariable int id) {
-
-        Product product = productService.getProductById(id);
-
-        if (product != null) {
-            productService.deleteProduct(id);
-            return new ResponseEntity<>("Deleted", HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        productService.getProductById(id);
+        productService.deleteProduct(id);
+        return ResponseEntity.ok("Deleted");
     }
 
     @GetMapping("/products/search")
@@ -104,7 +95,7 @@ public class ProductController {
         return new ResponseEntity<>(products, HttpStatus.OK);
     }
 
-    @GetMapping("/products/filtering&pagnation&sorting")
+    @GetMapping("/products/filtering&pagination&sorting")
     public ResponseEntity<Page<ProductResponse>> getAllProducts(
         @RequestParam(name = "page", defaultValue= "0") Integer page,
         @RequestParam(name = "size", defaultValue= "10") Integer size,
