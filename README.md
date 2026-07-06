@@ -1,6 +1,6 @@
 # SpringEcom
 
-A full-stack e-commerce backend built with **Spring Boot** featuring secure authentication, OAuth2 login, product management, image uploads, order processing, filtering, pagination, and PostgreSQL persistence.
+A backend e-commerce backend built with **Spring Boot** featuring secure authentication, OAuth2 login, product management, image uploads, order processing, filtering, pagination, and PostgreSQL persistence.
 
 ---
 
