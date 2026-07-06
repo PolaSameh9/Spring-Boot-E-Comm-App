@@ -5,6 +5,11 @@ A backend e-commerce backend built with **Spring Boot** featuring secure authent
 Frontend: A lightweight React interface created primarily to demonstrate and test the backend APIs.
 ---
 
+<img width="1984" height="1214" alt="image" src="https://github.com/user-attachments/assets/f45b54de-366e-42c6-8821-9c6cca6ffb6a" />
+<img width="1726" height="860" alt="image" src="https://github.com/user-attachments/assets/404df5e8-575c-4918-be1c-d25b0dcc0e09" />
+<img width="999" height="1278" alt="image" src="https://github.com/user-attachments/assets/35c75fa1-ac6e-4c60-8d2a-e863e15544cc" />
+
+
 # Features
 
 - JWT Authentication
