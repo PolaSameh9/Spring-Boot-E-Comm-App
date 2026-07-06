@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.example.SpringEcom.service.JwtService;
-import com.example.SpringEcom.service.MyUserDetailsService;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -24,7 +23,7 @@ public class JwtFilter extends OncePerRequestFilter{
     private final UserDetailsService userDetailsService;
     private final JwtService jwtService;
 
-    public JwtFilter(MyUserDetailsService userDetailsService, JwtService jwtService) {
+    public JwtFilter(UserDetailsService userDetailsService, JwtService jwtService) {
         this.userDetailsService = userDetailsService;
         this.jwtService = jwtService;
     }
