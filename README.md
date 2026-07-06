@@ -1,125 +1,267 @@
 # SpringEcom
 
-A simple Spring Boot e-commerce backend example providing products, categories, orders, and user authentication (JWT + OAuth2).
+A full-stack e-commerce backend built with **Spring Boot** featuring secure authentication, OAuth2 login, product management, image uploads, order processing, filtering, pagination, and PostgreSQL persistence.
 
-## Features
+---
 
-- **REST API** for products, categories, orders and users
-- **JWT authentication** and OAuth2 (Google / GitHub) login
-- **Product image upload** (multipart)
-- **Filtering, pagination, and sorting** for products
-- Uses **PostgreSQL** (configurable) and Spring Data JPA
+# Features
 
-## Tech Stack
+- JWT Authentication
+- OAuth2 Login (Google & GitHub)
+- Role-based authorization
+- Product CRUD
+- Category CRUD
+- Order management
+- Product image upload & retrieval
+- Product search
+- Dynamic filtering using Spring Specifications
+- Pagination & sorting
+- PostgreSQL database
+- DTO mapping
+- Docker support
 
-- Java (configured in `pom.xml`)
-- Spring Boot (Web, Security, Data JPA, OAuth2)
+---
+
+# Tech Stack
+
+### Backend
+
+- Java
+- Spring Boot
+- Spring Security
+- Spring Data JPA
+- Spring OAuth2 Client
+- Hibernate
+- Maven
+
+### Database
+
 - PostgreSQL
-- Maven wrapper included (`mvnw`, `mvnw.cmd`)
 
-## Getting Started
+### Utilities
 
-Prerequisites
+- JWT
+- Lombok
+- Jackson
+- MapStruct
 
-- Java (see `pom.xml` for configured version) — JDK installation required
-- PostgreSQL running and accessible (or update `application.properties` to use another DB)
-- Docker & Docker Compose (optional)
+### DevOps
 
-Quick run (development)
+- Docker
+- Docker Compose
 
-Windows (PowerShell):
+---
 
-```powershell
-.\mvnw.cmd spring-boot:run
+# Project Structure
+
+```
+src
+ ├── config
+ ├── controller
+ ├── mapper
+ ├── model
+     ├── dto
+ ├── repo
+ ├── service
+ ├── specification
+ └── resources
 ```
 
-Unix/macOS:
+---
+
+# Getting Started
+
+## Prerequisites
+
+- Java JDK
+- Maven
+- PostgreSQL
+
+(Optional)
+
+- Docker
+- Docker Compose
+
+---
+
+## Clone the repository
+
+```bash
+git clone https://github.com/polasameh9/SpringEcom.git
+
+cd SpringEcom
+```
+
+---
+
+## Configure the application
+
+Update:
+
+```
+src/main/resources/application.properties
+```
+
+Configure:
+
+- PostgreSQL username/password
+- JWT secret
+- Google OAuth credentials
+- GitHub OAuth credentials
+---
+
+## Run the application
+
+### Maven
 
 ```bash
 ./mvnw spring-boot:run
 ```
 
-Build jar
+Windows
 
-```bash
-./mvnw package
-java -jar target/spring-ecom.jar
+```powershell
+.\mvnw.cmd spring-boot:run
 ```
 
-Docker (if you prefer containers)
+---
+
+### Build
 
 ```bash
-docker-compose up -d --build
+./mvnw clean package
+
+java -jar target/*.jar
 ```
 
-Configuration
+---
 
-Modify [src/main/resources/application.properties](src/main/resources/application.properties#L1-L36) to set your database credentials, OAuth client ids/secrets, and JWT secret. Do NOT commit secrets to the repository.
-
-## API Endpoints (summary)
-
-All endpoints are rooted under `/api`.
-
-- Users
-  - `POST /api/register` — register new user (JSON `User` object)
-  - `POST /api/login` — login (JSON `AuthRequest`) — returns JWT token
-
-- Products
-  - `GET /api/products` — list all products
-  - `GET /api/product/{id}` — get product by id
-  - `GET /api/product/{productId}/image` — get raw image bytes
-  - `POST /api/product` — add product (multipart: `product` JSON + `imageFile`)
-  - `PUT /api/product/{id}` — update product (multipart)
-  - `DELETE /api/product/{id}` — delete product
-  - `GET /api/products/search?keyword=...` — search products
-  - `GET /api/products/filtering&pagination&sorting?...` — filtering/pagination/sorting
-
-- Categories
-  - `POST /api/categories` — create category
-  - `GET /api/categories` — list categories
-  - `GET /api/categories/{id}` — get category
-  - `PUT /api/categories/{id}` — update
-  - `DELETE /api/categories/{id}` — delete
-
-- Orders
-  - `POST /api/orders` — place an order (JSON `OrderRequest`)
-  - `GET /api/orders` — list orders
-  - `PUT /api/order/{orderId}/status` — update order status
-
-Authentication
-
-- Most write endpoints require authentication via JWT. Add header: `Authorization: Bearer <token>` after login.
-
-Example: login + use token
+### Docker
 
 ```bash
-curl -X POST http://localhost:8090/api/login \
-  -H "Content-Type: application/json" \
-  -d '{"email":"user@example.com","password":"secret"}'
-# response contains token; use in Authorization header for protected endpoints
+docker compose up --build
 ```
 
-Product upload example (curl)
+---
 
-```bash
-curl -X POST http://localhost:8090/api/product \
-  -H "Authorization: Bearer $TOKEN" \
-  -F "product={\"productName\":\"My product\",\"productPrice\":19.99};type=application/json" \
-  -F "imageFile=@/path/to/image.jpg"
+# REST API
+
+Base URL
+
+```
+http://localhost:8090/api
 ```
 
-## Tests
+## Authentication
 
-Run unit tests with:
+| Method | Endpoint |
+|---------|----------|
+| POST | /register |
+| POST | /login |
 
-```bash
-./mvnw test
+---
+
+## Products
+
+| Method | Endpoint |
+|---------|----------|
+| GET | /products |
+| GET | /product/{id} |
+| POST | /product |
+| PUT | /product/{id} |
+| DELETE | /product/{id} |
+| GET | /products/search |
+| GET | /products/filtering&pagination&sorting |
+| GET | /product/{id}/image |
+
+---
+
+## Categories
+
+| Method | Endpoint |
+|---------|----------|
+| GET | /categories |
+| GET | /category/{id} |
+| POST | /category |
+| PUT | /category/{id} |
+| DELETE | /category/{id} |
+
+---
+
+## Orders
+
+| Method | Endpoint |
+|---------|----------|
+| POST | /orders |
+| GET | /orders |
+| PUT | /order/{orderId} |
+
+---
+
+# Authentication
+
+Protected endpoints require:
+
+```
+Authorization: Bearer <JWT_TOKEN>
 ```
 
-## Contributing
+---
 
-Contributions are welcome. Open an issue or submit a PR.
+# Example Login
 
-## License
+```http
+POST /api/login
+```
 
-This repository does not include a license file. Add one if you plan to publish it publicly.
+```json
+{
+  "email": "user@example.com",
+  "password": "password"
+}
+```
+
+Response
+
+```json
+{
+  "token": "eyJhbGc..."
+}
+```
+
+---
+
+# What I Learned
+
+This project helped me gain practical experience with:
+
+- Spring Security
+- JWT Authentication
+- OAuth2 Login
+- REST API Design
+- Spring Data JPA
+- Hibernate Relationships
+- DTO Mapping
+- Product Image Uploads
+- Pagination & Sorting
+- Dynamic Filtering with Specifications
+- PostgreSQL Integration
+- Docker
+
+---
+
+# Future Improvements
+
+- Unit & Integration Tests
+- Refresh Tokens
+- Role Management UI
+- Swagger/OpenAPI Documentation
+- Redis Caching
+- Global Exception Handling
+- Payment Gateway Integration
+
+---
+
+# License
+
+This project is open for learning purposes.
