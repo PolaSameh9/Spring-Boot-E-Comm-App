@@ -2,6 +2,7 @@
 
 A backend e-commerce backend built with **Spring Boot** featuring secure authentication, OAuth2 login, product management, image uploads, order processing, filtering, pagination, and PostgreSQL persistence.
 
+Frontend: A lightweight React interface created primarily to demonstrate and test the backend APIs.
 ---
 
 # Features
