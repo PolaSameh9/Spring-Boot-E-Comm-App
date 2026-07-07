@@ -267,18 +267,6 @@ This project helped me gain practical experience with:
 
 ---
 
-# Future Improvements
-
-- Unit & Integration Tests
-- Refresh Tokens
-- Role Management UI
-- Swagger/OpenAPI Documentation
-- Redis Caching
-- Global Exception Handling
-- Payment Gateway Integration
-
----
-
 # License
 
 This project is open for learning purposes.
