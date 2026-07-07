@@ -4,12 +4,19 @@ A backend e-commerce backend built with **Spring Boot** featuring secure authent
 
 Frontend: A lightweight React interface created primarily to demonstrate and test the backend APIs.
 ---
+**Login**
 <img width="1143" height="924" alt="image" src="https://github.com/user-attachments/assets/89c6d86e-b335-4825-b026-82c82fcd0166" />
+**Home Page**
 <img width="1984" height="1214" alt="image" src="https://github.com/user-attachments/assets/f45b54de-366e-42c6-8821-9c6cca6ffb6a" />
+**Product List**
 <img width="2521" height="1349" alt="image" src="https://github.com/user-attachments/assets/c44139ef-0325-4ecd-9e69-b3f8c257d273" />
+**Product Details**
 <img width="1772" height="1177" alt="image" src="https://github.com/user-attachments/assets/12de030f-4a65-47d2-a25d-3fb8cd012d8e" />
+**Orders List**
 <img width="1726" height="860" alt="image" src="https://github.com/user-attachments/assets/404df5e8-575c-4918-be1c-d25b0dcc0e09" />
+**Add New Product**
 <img width="999" height="1278" alt="image" src="https://github.com/user-attachments/assets/35c75fa1-ac6e-4c60-8d2a-e863e15544cc" />
+**Functional Docker Images**
 <img width="2012" height="132" alt="image" src="https://github.com/user-attachments/assets/0a376858-ef49-49a0-a18e-5ba5fb9f43b5" />
 
 
